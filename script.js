@@ -42,7 +42,19 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
         scales: {
           xAxes: [{stacked: true}],
           yAxes: [{stacked: true}]
+        },
+/*
+        tooltips: {
+            enabled: true,
+            mode: 'single',
+            callbacks: {
+                label: function(tooltipItems, data) {
+                    return true;
+//                    return 'test';
+                }
+            }
         }
+*/
       }
     });
 
@@ -64,6 +76,8 @@ let dragdrop_elem = null;
 
 function drag(e) {
   dragdrop_elem = myChart.getElementAtEvent(e)[0];
+  closeTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
+  $('#dragndroptooltip').addClass('active').html(myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
   // alert(dragdrop_elem);
 }
 
@@ -71,7 +85,8 @@ function drop(e) {
   e.preventDefault();
   let dropPoint = myChart.getElementAtEvent(e)[0];
   if (dropPoint){
-      $('#dragndropconfirm').dialog(
+    $('#dragndroptooltip').removeClass('active');
+    $('#dragndropconfirm').dialog(
        {
           resizable: false,
           height: "auto",
@@ -83,6 +98,11 @@ function drop(e) {
                 myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
                 myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
                 myChart.update();
+/*
+                setTimeout(function() {
+                    openTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
+                }, 300);
+*/
             },
             "No": function() {
               $( this ).dialog( "close" );
@@ -97,6 +117,15 @@ function drop(e) {
                         myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
                         myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
                         myChart.update();
+                        $('#dragndroptooltip').removeClass('active');
+/*
+                        setTimeout(function() {
+                            openTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
+                        }, 300);
+*/
+                    },
+                    "Cancel": function() {
+                        $(this).dialog('close');
                     }
                 }
               })
@@ -178,3 +207,50 @@ submit_btn.onclick = function(e){
   value_input.value = '';
   menu.style.display = 'none';
 };
+
+document.addEventListener("dragstart", function( event ) {
+    var img = new Image();
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+    img.style.border = '0px';
+    event.dataTransfer.setDragImage(img, 0, 0);
+}, false);
+
+document.addEventListener('dragover', function(evt) {
+    $('#dragndroptooltip').css('left', evt.pageX + 'px');
+    $('#dragndroptooltip').css('top', evt.pageY + 'px');
+}, false);
+
+
+function openTip(oChart,datasetIndex,pointIndex){
+   if(oChart.tooltip._active == undefined)
+      oChart.tooltip._active = []
+   var activeElements = oChart.tooltip._active;
+   var requestedElem = oChart.getDatasetMeta(datasetIndex).data[pointIndex];
+   for(var i = 0; i < activeElements.length; i++) {
+       if(requestedElem._index == activeElements[i]._index)  
+          return;
+   }
+   activeElements.push(requestedElem);
+   oChart.tooltip._active = activeElements;
+   oChart.tooltip.update(true);
+   oChart.draw();
+}
+
+function closeTip(oChart,datasetIndex,pointIndex){
+   var activeElements = oChart.tooltip._active;
+   if(activeElements == undefined || activeElements.length == 0)
+     return;
+   var requestedElem = oChart.getDatasetMeta(datasetIndex).data[pointIndex];
+   for(var i = 0; i < activeElements.length; i++) {
+       if(requestedElem._index == activeElements[i]._index)  {
+          activeElements.splice(i, 1);
+          break;
+       }
+   }
+   oChart.tooltip._active = activeElements;
+   oChart.tooltip.update(true);
+   oChart.draw();
+}
+
+window.openTip = openTip;
+window.closeTop = closeTip;

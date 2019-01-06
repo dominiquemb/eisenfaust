@@ -59,3 +59,23 @@ a:hover {
 #dragndrophowmuch {
   display: none;
 }
+
+
+#dragndroptooltip {
+    display: none;
+    background: rgba(0,0,0,0.7);
+    margin-left: 21px;
+    margin-top: 13px;
+    font-size: 13px;
+    border-radius: 4px;
+    padding: 3px 8px;
+    color: #fff;
+    max-width: 200px;
+    position: absolute;
+    z-index: 99;
+}
+
+#dragndroptooltip.active {
+    display: block;
+}
+
