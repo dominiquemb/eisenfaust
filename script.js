@@ -98,8 +98,8 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
             mode: 'single',
             callbacks: {
                 label: function(tooltipItem, data) {
-                    var labelWithoutTotal = data.datasets[tooltipItem.index].label.split(' (')[0];
-                        return labelWithoutTotal + ': $' + tooltipItem.yLabel;
+                    var labelWithoutTotal = data.datasets[tooltipItem.datasetIndex].label.split(' (')[0];
+                    return labelWithoutTotal + ': $' + tooltipItem.yLabel;
                 }
             }
         }
@@ -128,7 +128,15 @@ function drag(e) {
   dragdrop_elem = myChart.getElementAtEvent(e)[0];
   closeTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
   $('#custom-chart-tooltip').addClass('active').html('$' + myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
-  // alert(dragdrop_elem);
+/*  myChart.data.datasets.push(
+          {
+            data: [1234],
+            label: "Custom",
+            backgroundColor: "rgba(20,40,60,.8)",
+          }
+  );
+  myChart.update();
+*/
 }
 
 function drop(e) {
