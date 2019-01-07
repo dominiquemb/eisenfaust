@@ -45,8 +45,25 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
         },
 /*
         legend: { display: false},
+*/
         legendCallback: function(chart) {
-console.log(chart);
+            var i = 0;
+            var x = 0;
+            var chargeTypeTotal = {};
+
+            for (i; i < myChart.data.datasets.length; i++) {
+                x = 0;
+                chargeTypeTotal[i] = 0;
+                for (x; x < myChart.data.datasets[i].data.length; x++) {
+console.log(myChart.data.datasets[i].data[x]);
+                    chargeTypeTotal[i] += myChart.data.datasets[i].data[x]; 
+console.log(chargeTypeTotal[i]);
+                }
+                myChart.data.datasets[i].label = myChart.data.datasets[i].label + ' ($' + chargeTypeTotal[i] + ')';
+            }
+            myChart.update();
+            
+/*
     var text = []; 
     text.push('<ul class="' + chart.id + '-legend">'); 
     for (var i = 0; i < chart.data.datasets.length; i++) { 
@@ -60,9 +77,17 @@ console.log(chart);
     } 
     text.push('</ul>'); 
     return text.join(''); 
-        }
 */
+        },
         legend: {
+/*
+            labels: {
+                generateLabels: function(obj, legenditem) {
+                    console.log('generateLabels');
+                    console.log(legenditem);
+                }
+            },
+*/
             onHover: function(evt, legendItem) {
                 evt.stopPropagation();
                 $('#custom-chart-tooltip').css('left', evt.pageX + 'px');
@@ -86,6 +111,7 @@ console.log(chart);
     });
     
 //$('#chart-legends').html(myChart.generateLegend());
+myChart.generateLegend();
 
 // Select init
 let chartLabels = document.getElementById('chartLabels');
@@ -106,7 +132,7 @@ let dragdrop_elem = null;
 function drag(e) {
   dragdrop_elem = myChart.getElementAtEvent(e)[0];
   closeTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
-  $('#custom-chart-tooltip').addClass('active').html(myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
+  $('#custom-chart-tooltip').addClass('active').html('$' + myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
   // alert(dragdrop_elem);
 }
 
