@@ -226,6 +226,9 @@ ctx.oncontextmenu = function(e){
 
   if (target_elem) {
     chartLabels.options[target_elem._datasetIndex].selected = 'selected';
+    var chargeType = target_elem._model.datasetLabel.split(' (')[0];
+    $(menu).find('#addElem').html('Add to ' + chargeType + ' in ' + target_elem._model.label);
+    $(menu).find('#deleteElem').html('Delete from ' + chargeType + ' in ' + target_elem._model.label);
     menu.style.display = 'block';
   }
 };
