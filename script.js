@@ -55,9 +55,7 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
                 x = 0;
                 chargeTypeTotal[i] = 0;
                 for (x; x < myChart.data.datasets[i].data.length; x++) {
-console.log(myChart.data.datasets[i].data[x]);
                     chargeTypeTotal[i] += myChart.data.datasets[i].data[x]; 
-console.log(chargeTypeTotal[i]);
                 }
                 myChart.data.datasets[i].label = myChart.data.datasets[i].label + ' ($' + chargeTypeTotal[i] + ')';
             }
@@ -95,22 +93,19 @@ console.log(chargeTypeTotal[i]);
                 $('#custom-chart-tooltip').addClass('active').html('Click to show/hide Charge Type');
             }
         },
-/*
         tooltips: {
             enabled: true,
             mode: 'single',
             callbacks: {
-                label: function(tooltipItems, data) {
-                    return true;
-//                    return 'test';
+                label: function(tooltipItem, data) {
+                    var labelWithoutTotal = data.datasets[tooltipItem.index].label.split(' (')[0];
+                        return labelWithoutTotal + ': $' + tooltipItem.yLabel;
                 }
             }
         }
-*/
       }
     });
     
-//$('#chart-legends').html(myChart.generateLegend());
 myChart.generateLegend();
 
 // Select init
