@@ -90,7 +90,7 @@ $.each(chartLabels, function(selectindex, select) {
     myChart.data.datasets.forEach(function(el, i) {
       let option = document.createElement('option');
       option.value = i;
-      option.text = el.label;
+      option.text = el.label.split(' (')[0];
       chartLabels[selectindex].appendChild(option);
     });
 });
@@ -235,13 +235,15 @@ ctx.oncontextmenu = function(e){
   target_elem = myChart.getElementAtEvent(e)[0];
 
   if (target_elem) {
-    chartLabels.options[target_elem._datasetIndex].selected = 'selected';
+//    chartLabels.options[target_elem._datasetIndex].selected = 'selected';
     var chargeType = target_elem._model.datasetLabel.split(' (')[0];
     $(menu).find('#addElem').html('Add to ' + chargeType + ' in ' + target_elem._model.label);
     $(menu).find('#deleteElem').html('Delete from ' + chargeType + ' in ' + target_elem._model.label);
+    transfermenu.style.display = 'none';
     menu.style.display = 'block';
   }
   else {
+    menu.style.display = 'none';
     transfermenu.style.display = 'block';
   }
 };
@@ -288,7 +290,7 @@ executetransfer.on('click', function(e){
       transferto = parseInt($('#transferto').val()),
       transferamount = parseFloat($('#transferamount_textfield').val());
 
-  if (transferamount !== '') {
+  if (transferamount !== '' && transferamount <= myChart.data.datasets[chargetype].data[transferfrom]) {
     myChart.data.datasets[chargetype].data[transferfrom] -= parseFloat(transferamount);
     myChart.data.datasets[chargetype].data[transferto] += parseFloat(transferamount);
     myChart.update();
