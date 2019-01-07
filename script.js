@@ -60,32 +60,8 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
                 myChart.data.datasets[i].label = myChart.data.datasets[i].label + ' ($' + chargeTypeTotal[i] + ')';
             }
             myChart.update();
-            
-/*
-    var text = []; 
-    text.push('<ul class="' + chart.id + '-legend">'); 
-    for (var i = 0; i < chart.data.datasets.length; i++) { 
-        text.push('<li><span style="background-color:' + 
-                   chart.data.datasets[i].backgroundColor + 
-                   '"></span>'); 
-        if (chart.data.datasets[i].label) { 
-            text.push(chart.data.datasets[i].label); 
-        } 
-        text.push('</li>'); 
-    } 
-    text.push('</ul>'); 
-    return text.join(''); 
-*/
         },
         legend: {
-/*
-            labels: {
-                generateLabels: function(obj, legenditem) {
-                    console.log('generateLabels');
-                    console.log(legenditem);
-                }
-            },
-*/
             onHover: function(evt, legendItem) {
                 evt.stopPropagation();
                 $('#custom-chart-tooltip').css('left', evt.pageX + 'px');
@@ -109,22 +85,26 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
 myChart.generateLegend();
 
 // Select init
-let chartLabels = document.getElementById('chartLabels');
-myChart.data.datasets.forEach(function(el, i){
-  let option = document.createElement('option');
-  option.value = i;
-  option.text = el.label;
-  chartLabels.appendChild(option);
+let chartLabels = document.getElementsByClassName('chargetypeselect');
+$.each(chartLabels, function(selectindex, select) {
+    myChart.data.datasets.forEach(function(el, i) {
+      let option = document.createElement('option');
+      option.value = i;
+      option.text = el.label;
+      chartLabels[selectindex].appendChild(option);
+    });
 });
 
-let transferfrom = document.getElementById('transferfrom');
-myChart.data.labels.forEach(function(el, i){
-  let option = document.createElement('option');
-  option.value = i;
-  option.text = el;
-  transferfrom.appendChild(option);
+let accountselects = document.getElementsByClassName('accountselect');
+$.each(accountselects, function(selectindex, select) {
+    myChart.data.labels.forEach(function(el, i){
+      let option = document.createElement('option');
+      option.value = i;
+      option.text = el;
+      accountselects[selectindex].appendChild(option);
+    });
 });
-
+/*
 let chargetype = document.getElementById('chargetype');
 myChart.data.datasets.forEach(function(el, i){
   let option = document.createElement('option');
@@ -140,7 +120,7 @@ myChart.data.labels.forEach(function(el, i){
   option.text = el;
   transferto.appendChild(option);
 });
-
+*/
 
 // Drag & Drop
 function allowDrop(e) {
@@ -153,15 +133,6 @@ function drag(e) {
   dragdrop_elem = myChart.getElementAtEvent(e)[0];
   closeTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
   $('#custom-chart-tooltip').addClass('active').html('$' + myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
-/*  myChart.data.datasets.push(
-          {
-            data: [1234],
-            label: "Custom",
-            backgroundColor: "rgba(20,40,60,.8)",
-          }
-  );
-  myChart.update();
-*/
 }
 
 function drop(e) {
@@ -237,7 +208,6 @@ ctx.ondragover = function(e) {
 // Context Menu
 let menu = document.getElementById('chargetype-context-menu');
 let transfermenu = document.getElementById('transfer-context-menu');
-console.log(transfermenu);
 let target_elem = null;
 
 ctx.onclick = function(evt){
@@ -272,7 +242,6 @@ ctx.oncontextmenu = function(e){
     menu.style.display = 'block';
   }
   else {
-console.log('????');
     transfermenu.style.display = 'block';
   }
 };
@@ -312,12 +281,11 @@ submit_btn.onclick = function(e){
 
 // Execute transfer from context menu
 let executetransfer = $('#executetransfer');
-console.log(executetransfer);
 
 executetransfer.on('click', function(e){
   let transferfrom = parseInt($('#transferfrom').val()),
       chargetype = parseInt($('#chargetype').val()),
-      transferto = parseInt($('#transferto').val());
+      transferto = parseInt($('#transferto').val()),
       transferamount = parseFloat($('#transferamount_textfield').val());
 
   if (transferamount !== '') {
@@ -329,6 +297,42 @@ executetransfer.on('click', function(e){
   }
 
   $('#transferamount_textfield').val('');
+
+  transfermenu.style.display = 'none';
+});
+
+// Create a new Charge Type
+let executenewchargetype = $('#executenewchargetype');
+
+executenewchargetype.on('click', function(e){
+  let customchargetypename = $('#customchargetypename').val(),
+      newchargetypeamount = parseFloat($('#newchargetypeamount').val()),
+      newchargetypeaccount = parseInt($('#newchargetypeaccount').val());
+
+  if (newchargetypeamount !== '') {
+    let dataObject = []; 
+    $.each(myChart.data.datasets, function(index, accountamount) {
+        if (index == newchargetypeaccount) {
+            dataObject.push(newchargetypeamount);
+        }
+        else {
+            dataObject.push(0);
+        }
+    });
+    myChart.data.datasets.push(
+      {
+        data: dataObject,
+        label: customchargetypename + ' ($' + newchargetypeamount + ')',
+        backgroundColor: getRandomRgb('.8'),
+      }
+    );
+    myChart.update();
+  } else {
+    e.preventDefault();
+  }
+
+  $('#newchargetypeamount').val('');
+  $('#customchargetypename').val('');
 
   transfermenu.style.display = 'none';
 });
@@ -375,6 +379,38 @@ function closeTip(oChart,datasetIndex,pointIndex){
    oChart.tooltip._active = activeElements;
    oChart.tooltip.update(true);
    oChart.draw();
+}
+
+function calculateRandomRgb() {
+  var num = Math.round(0xffffff * Math.random());
+  var r = num >> 16;
+  var g = num >> 8 & 255;
+  var b = num & 255;
+
+  var foundmatch = false;
+
+  $.each(myChart.data.datasets, function(index, dataset) {
+    var rgba = dataset.backgroundColor.replace(/\s/g, '');
+
+    if (rgba == 'rgb(' + r + ', ' + g + ', ' + b + ',.8)') {
+        foundmatch = true;
+    }
+  });
+
+  if (!foundmatch) {
+    return 'rgb(' + r + ', ' + g + ', ' + b + ',.8)';
+  }
+  return false;
+}
+
+function getRandomRgb() {
+  var newrgb = calculateRandomRgb();
+
+  while (newrgb == false) {
+    newrgb = calculateRandomRgb();
+  }
+  
+  return newrgb;
 }
 
 window.openTip = openTip;

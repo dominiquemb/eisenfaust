@@ -21,7 +21,7 @@
     <div id="transfer-context-menu" class="context-menu">
         <ul>
             <li><a id="transferanamount" href="#" data-toggle="modal" data-target="#transfermodal">Transfer an Amount</a></li>
-            <li><a id="addanewchargetype" href="#">Add a new Charge Type</a></li>
+            <li><a id="addanewchargetype" data-toggle="modal" data-target="#newchargetypemodal" href="#">Add a new Charge Type</a></li>
         </ul>
     </div>
 
@@ -43,21 +43,47 @@
         <input type="text" id="dragndrophowmuch_value" />
     </div>
 
+    <div class="modal" id="newchargetypemodal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="customchargetypename">Custom name:</label>
+                        <input id="customchargetypename" class="form-control">
+                    </div>
+                    <div class="form-group amount">
+                        <label for="newchargetypeamount">Amount:</label>
+
+                        <input id="newchargetypeamount" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Account:</label>
+                        <select class="form-control accountselect" id="newchargetypeaccount"></select>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" id="executenewchargetype" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        <button type="button" id="onCancel" class="btn btn-primary btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="transfermodal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="transferfrom">Transfer from:</label>
-                        <select class="form-control" id="transferfrom"></select>
+                        <select class="form-control accountselect" id="transferfrom"></select>
                     </div>
                     <div class="form-group">
                         <label for="chargetype">Charge type:</label>
-                        <select class="form-control" id="chargetype"></select>
+                        <select class="form-control chargetypeselect" id="chargetype"></select>
                     </div>
                     <div class="form-group">
                         <label for="transferto">Transfer to:</label>
-                        <select class="form-control" id="transferto"></select>
+                        <select class="form-control accountselect" id="transferto"></select>
                     </div>
                     <div class="form-group transferamount">
                         <label for="transferamount_textfield">Transfer amount:</label>
@@ -77,7 +103,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group">
-                        <select class="form-control" id="chartLabels"></select>
+                        <select class="form-control chargetypeselect" id="chartLabels"></select>
                     </div>
                     <div class="form-group chartvalue">
                         <input id="chartValue" class="form-control">
