@@ -44,6 +44,33 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
           yAxes: [{stacked: true}]
         },
 /*
+        legend: { display: false},
+        legendCallback: function(chart) {
+console.log(chart);
+    var text = []; 
+    text.push('<ul class="' + chart.id + '-legend">'); 
+    for (var i = 0; i < chart.data.datasets.length; i++) { 
+        text.push('<li><span style="background-color:' + 
+                   chart.data.datasets[i].backgroundColor + 
+                   '"></span>'); 
+        if (chart.data.datasets[i].label) { 
+            text.push(chart.data.datasets[i].label); 
+        } 
+        text.push('</li>'); 
+    } 
+    text.push('</ul>'); 
+    return text.join(''); 
+        }
+*/
+        legend: {
+            onHover: function(evt, legendItem) {
+                evt.stopPropagation();
+                $('#custom-chart-tooltip').css('left', evt.pageX + 'px');
+                $('#custom-chart-tooltip').css('top', evt.pageY + 'px');
+                $('#custom-chart-tooltip').addClass('active').html('Click to show/hide Charge Type');
+            }
+        },
+/*
         tooltips: {
             enabled: true,
             mode: 'single',
@@ -57,6 +84,8 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
 */
       }
     });
+    
+//$('#chart-legends').html(myChart.generateLegend());
 
 // Select init
 let chartLabels = document.getElementById('chartLabels');
@@ -77,7 +106,7 @@ let dragdrop_elem = null;
 function drag(e) {
   dragdrop_elem = myChart.getElementAtEvent(e)[0];
   closeTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
-  $('#dragndroptooltip').addClass('active').html(myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
+  $('#custom-chart-tooltip').addClass('active').html(myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
   // alert(dragdrop_elem);
 }
 
@@ -85,7 +114,7 @@ function drop(e) {
   e.preventDefault();
   let dropPoint = myChart.getElementAtEvent(e)[0];
   if (dropPoint){
-    $('#dragndroptooltip').removeClass('active');
+    $('#custom-chart-tooltip').removeClass('active').html('');
     $('#dragndropconfirm').dialog(
        {
           resizable: false,
@@ -117,7 +146,7 @@ function drop(e) {
                         myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
                         myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
                         myChart.update();
-                        $('#dragndroptooltip').removeClass('active');
+                        $('#custom-chart-tooltip').removeClass('active').html('');
 /*
                         setTimeout(function() {
                             openTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
@@ -158,6 +187,11 @@ let target_elem = null;
 ctx.onclick = function(evt){
   menu.style.display = 'none';
 };
+
+$('body').on('mousemove', function(evt) {
+  let target = myChart.getDatasetAtEvent(evt);
+  $('#custom-chart-tooltip').removeClass('active').html('');
+});
 
 ctx.oncontextmenu = function(e){
   e.preventDefault();
@@ -216,8 +250,8 @@ document.addEventListener("dragstart", function( event ) {
 }, false);
 
 document.addEventListener('dragover', function(evt) {
-    $('#dragndroptooltip').css('left', evt.pageX + 'px');
-    $('#dragndroptooltip').css('top', evt.pageY + 'px');
+    $('#custom-chart-tooltip').css('left', evt.pageX + 'px');
+    $('#custom-chart-tooltip').css('top', evt.pageY + 'px');
 }, false);
 
 
