@@ -41,11 +41,11 @@ a:hover {
   width: calc(100% - 295px);
 }
 
-#context-menu {
+.context-menu {
   position:absolute; display:none;
 }
 
-#context-menu ul, #context-menu li {
+.context-menu ul, .context-menu li {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -79,3 +79,16 @@ a:hover {
     display: block;
 }
 
+#transfermodal .transferamount {
+    padding-top: 10px;
+    clear: both;
+    margin: auto;
+    float: none;
+    width: 175px;
+}
+
+.modal-buttons {
+    padding-top: 15px;
+    clear: both;
+    display
+}

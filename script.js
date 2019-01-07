@@ -117,6 +117,31 @@ myChart.data.datasets.forEach(function(el, i){
   chartLabels.appendChild(option);
 });
 
+let transferfrom = document.getElementById('transferfrom');
+myChart.data.labels.forEach(function(el, i){
+  let option = document.createElement('option');
+  option.value = i;
+  option.text = el;
+  transferfrom.appendChild(option);
+});
+
+let chargetype = document.getElementById('chargetype');
+myChart.data.datasets.forEach(function(el, i){
+  let option = document.createElement('option');
+  option.value = i;
+  option.text = el.label.split(' (')[0];
+  chargetype.appendChild(option);
+});
+
+let transferto = document.getElementById('transferto');
+myChart.data.labels.forEach(function(el, i){
+  let option = document.createElement('option');
+  option.value = i;
+  option.text = el;
+  transferto.appendChild(option);
+});
+
+
 // Drag & Drop
 function allowDrop(e) {
   e.preventDefault();
@@ -210,11 +235,14 @@ ctx.ondragover = function(e) {
 };
 
 // Context Menu
-let menu = document.getElementById('context-menu');
+let menu = document.getElementById('chargetype-context-menu');
+let transfermenu = document.getElementById('transfer-context-menu');
+console.log(transfermenu);
 let target_elem = null;
 
 ctx.onclick = function(evt){
   menu.style.display = 'none';
+  transfermenu.style.display = 'none';
 };
 
 $('body').on('mousemove', function(evt) {
@@ -230,6 +258,10 @@ ctx.oncontextmenu = function(e){
 
   menu.style.left = x + 1 + 'px';
   menu.style.top = y + 1 + 'px';
+
+  transfermenu.style.left = x + 1 + 'px';
+  transfermenu.style.top = y + 1 + 'px';
+
   target_elem = myChart.getElementAtEvent(e)[0];
 
   if (target_elem) {
@@ -238,6 +270,10 @@ ctx.oncontextmenu = function(e){
     $(menu).find('#addElem').html('Add to ' + chargeType + ' in ' + target_elem._model.label);
     $(menu).find('#deleteElem').html('Delete from ' + chargeType + ' in ' + target_elem._model.label);
     menu.style.display = 'block';
+  }
+  else {
+console.log('????');
+    transfermenu.style.display = 'block';
   }
 };
 
@@ -273,6 +309,29 @@ submit_btn.onclick = function(e){
   value_input.value = '';
   menu.style.display = 'none';
 };
+
+// Execute transfer from context menu
+let executetransfer = $('#executetransfer');
+console.log(executetransfer);
+
+executetransfer.on('click', function(e){
+  let transferfrom = parseInt($('#transferfrom').val()),
+      chargetype = parseInt($('#chargetype').val()),
+      transferto = parseInt($('#transferto').val());
+      transferamount = parseFloat($('#transferamount_textfield').val());
+
+  if (transferamount !== '') {
+    myChart.data.datasets[chargetype].data[transferfrom] -= parseFloat(transferamount);
+    myChart.data.datasets[chargetype].data[transferto] += parseFloat(transferamount);
+    myChart.update();
+  } else {
+    e.preventDefault();
+  }
+
+  $('#transferamount_textfield').val('');
+
+  transfermenu.style.display = 'none';
+});
 
 document.addEventListener("dragstart", function( event ) {
     var img = new Image();
