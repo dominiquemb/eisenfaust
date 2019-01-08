@@ -267,6 +267,7 @@ ctx.oncontextmenu = function(e){
 };
 
 // Delete Element
+/*
 let deleteElem = document.getElementById('deleteElem');
 
 deleteElem.onclick = function(e){
@@ -279,6 +280,7 @@ deleteElem.onclick = function(e){
   }
   menu.style.display = 'none';
 };
+*/
 
 // Add New Data
 let submit_btn = document.getElementById('onSubmit');
@@ -298,6 +300,26 @@ submit_btn.onclick = function(e){
   value_input.value = '';
   menu.style.display = 'none';
 };
+
+// Delete amoutn from charge type
+let executedeletefromchargetype = document.getElementById('executedeletefromchargetype');
+
+executedeletefromchargetype.onclick = function(e){
+  let selected_label = document.getElementById('delete_from_chartLabels'),
+      value_input = document.getElementById('delete_from_chartValue');
+
+  if (selected_label && target_elem && value_input.value !== '') {
+    myChart.data.datasets[selected_label.value].data[target_elem._index] -= parseInt(value_input.value);
+    myChart.update();
+  } else {
+    e.preventDefault();
+  }
+
+  selected_label.value = '';
+  value_input.value = '';
+  menu.style.display = 'none';
+};
+
 
 // Execute transfer from context menu
 let executetransfer = $('#executetransfer');

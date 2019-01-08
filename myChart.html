@@ -38,7 +38,7 @@
     <div id="chargetype-context-menu" class="context-menu">
         <ul>
             <li><a id="addElem" href="#" data-toggle="modal" data-target="#exampleModal">Add</a></li>
-            <li><a id="deleteElem" href="#">Delete</a></li>
+            <li><a id="deleteElem" href="#" data-toggle="modal" data-target="#deletefromchargetype">Delete</a></li>
         </ul>
     </div>
 
@@ -124,6 +124,26 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="deletefromchargetype">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select class="form-control chargetypeselect" id="delete_from_chartLabels"></select>
+                    </div>
+                    <div class="form-group chartvalue">
+                        <input id="delete_from_chartValue" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="executedeletefromchargetype" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        <button type="button" id="onCancel" class="btn btn-primary btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="modal" id="exampleModal">
         <div class="modal-dialog">
