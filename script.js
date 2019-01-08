@@ -169,9 +169,11 @@ function drop(e) {
                     "Submit": function() {
                         let value = parseFloat($('#dragndrophowmuch_value').val());
                         $(this).dialog("close");
-                        myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
-                        myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
-                        myChart.update();
+                        if (value <= myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index]) {
+                            myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
+                            myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
+                            myChart.update();
+                        }
                         $('#custom-chart-tooltip').removeClass('active').html('');
 /*
                         setTimeout(function() {
