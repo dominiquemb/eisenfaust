@@ -220,7 +220,7 @@ ctx.onclick = function(evt){
 document.getElementById('totalscircle').oncontextmenu = function(evt) {
    evt.preventDefault(); 
 
-  totalscirclemenu.style.left = evt.pageX -  + 'px';
+  totalscirclemenu.style.left = evt.pageX + 'px';
   totalscirclemenu.style.top = evt.pageY + 'px';
 
   totalscirclemenu.style.display = 'block';
@@ -317,13 +317,40 @@ executetransfer.on('click', function(e){
 });
 
 // Adjust total charge type value limit
-let executechangelimit = $('#executechangelimit');
+let executechangelimit = $('#executenewlimit');
+let defaultlimit = 50000;
+let chargeTypeTotal = 0;
+$('#newlimit').val(defaultlimit);
+
+var chargeTypeValues = {};
+
+$.each(myChart.data.datasets, function(i, dataset) {
+    chargeTypeValues[i] = 0;
+    $.each(myChart.data.datasets[i].data, function(x, data) {
+        chargeTypeValues[i] += myChart.data.datasets[i].data[x]; 
+    });
+});
+
+$.each(chargeTypeValues, function(chargeTypeId, total) {
+   chargeTypeTotal += total; 
+});
+
+$('#totalscircle').find('span').html(chargeTypeTotal);
+
+if (chargeTypeTotal < defaultlimit) {
+    $('#totalscircle').addClass('red');
+}
+if (chargeTypeTotal == defaultlimit) {
+    $('#totalscircle').addClass('green');
+}
+if (chargeTypeTotal > defaultlimit) {
+    $('#totalscircle').addClass('blue');
+}
 
 executechangelimit.on('click', function(e){
   let newlimit = parseInt($('#newlimit').val());
-
   if (newlimit !== '') {
-    $('#totalscircle').find('span').html(newlimit);
+    defaultlimit = newlimit;
   } else {
     e.preventDefault();
   }

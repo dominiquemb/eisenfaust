@@ -112,10 +112,35 @@ a:hover {
     float: right;
     width: 100px;
     height: 100px;
-    border: 4px solid red;
     border-radius: 50px;
     padding-top: 30px;
     font-size: 22px;
+}
+
+#totalscircle.red {
+    border: 4px solid red;
     color: red;
 }
 
+#totalscircle.green {
+    border: 4px solid #61c764;
+    color: #61c764;
+}
+
+#totalscircle.blue {
+    border: 4px solid #5bbcea;
+    color: #5bbcea;
+}
+
+#changelimitmodal .modal-dialog {
+    width: 300px;
+}
+
+#changelimitmodal .form-group {
+    width: auto !important;
+    clear: both;
+    float: none;
+    margin: auto;
+    display: block;
+}
+}
