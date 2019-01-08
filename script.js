@@ -319,38 +319,43 @@ executetransfer.on('click', function(e){
 // Adjust total charge type value limit
 let executechangelimit = $('#executenewlimit');
 let defaultlimit = 50000;
-let chargeTypeTotal = 0;
 $('#newlimit').val(defaultlimit);
 
-var chargeTypeValues = {};
+let calculateChargeTypeTotal = function() {
+    let chargeTypeTotal = 0;
+    let chargeTypeValues = {};
 
-$.each(myChart.data.datasets, function(i, dataset) {
-    chargeTypeValues[i] = 0;
-    $.each(myChart.data.datasets[i].data, function(x, data) {
-        chargeTypeValues[i] += myChart.data.datasets[i].data[x]; 
+    $.each(myChart.data.datasets, function(i, dataset) {
+        chargeTypeValues[i] = 0;
+        $.each(myChart.data.datasets[i].data, function(x, data) {
+            chargeTypeValues[i] += myChart.data.datasets[i].data[x]; 
+        });
     });
-});
 
-$.each(chargeTypeValues, function(chargeTypeId, total) {
-   chargeTypeTotal += total; 
-});
+    $.each(chargeTypeValues, function(chargeTypeId, total) {
+       chargeTypeTotal += total; 
+    });
 
-$('#totalscircle').find('span').html(chargeTypeTotal);
+    $('#totalscircle').find('span').html(chargeTypeTotal);
 
-if (chargeTypeTotal < defaultlimit) {
-    $('#totalscircle').addClass('red');
+    if (chargeTypeTotal < defaultlimit) {
+        $('#totalscircle').addClass('red');
+    }
+    if (chargeTypeTotal == defaultlimit) {
+        $('#totalscircle').addClass('green');
+    }
+    if (chargeTypeTotal > defaultlimit) {
+        $('#totalscircle').addClass('blue');
+    }
 }
-if (chargeTypeTotal == defaultlimit) {
-    $('#totalscircle').addClass('green');
-}
-if (chargeTypeTotal > defaultlimit) {
-    $('#totalscircle').addClass('blue');
-}
+
+calculateChargeTypeTotal();
 
 executechangelimit.on('click', function(e){
   let newlimit = parseInt($('#newlimit').val());
   if (newlimit !== '') {
     defaultlimit = newlimit;
+    calculateChargeTypeTotal();
   } else {
     e.preventDefault();
   }
