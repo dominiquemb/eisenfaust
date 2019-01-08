@@ -13433,7 +13433,7 @@ var exports = module.exports = Element.extend({
 
 			helpers.each(bodyItem.lines, function(line) {
 				// Draw Legend-like boxes if needed
-				if (drawColorBoxes) {
+				if (drawColorBoxes &&(line == bodyItem.lines[0])) {
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
 					ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);

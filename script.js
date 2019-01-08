@@ -233,6 +233,8 @@ $('body').on('mousemove', function(evt) {
   $('#custom-chart-tooltip').removeClass('active').html('');
 });
 
+
+
 ctx.oncontextmenu = function(e){
   e.preventDefault();
   let rect = ctx.getBoundingClientRect(),
@@ -249,6 +251,9 @@ ctx.oncontextmenu = function(e){
 
   if (target_elem) {
 //    chartLabels.options[target_elem._datasetIndex].selected = 'selected';
+    $('.chargetypeselect').each(function(index, select) {
+        $(select).val(target_elem._datasetIndex);
+    });
     var chargeType = target_elem._model.datasetLabel.split(' (')[0];
     $(menu).find('#addElem').html('Add to ' + chargeType + ' in ' + target_elem._model.label);
     $(menu).find('#deleteElem').html('Delete from ' + chargeType + ' in ' + target_elem._model.label);
@@ -340,12 +345,18 @@ let calculateChargeTypeTotal = function() {
 
     if (chargeTypeTotal < defaultlimit) {
         $('#totalscircle').addClass('red');
+        $('#totalscircle').removeClass('green');
+        $('#totalscircle').removeClass('blue');
     }
     if (chargeTypeTotal == defaultlimit) {
         $('#totalscircle').addClass('green');
+        $('#totalscircle').removeClass('red');
+        $('#totalscircle').removeClass('blue');
     }
     if (chargeTypeTotal > defaultlimit) {
         $('#totalscircle').addClass('blue');
+        $('#totalscircle').removeClass('green');
+        $('#totalscircle').removeClass('red');
     }
 }
 
