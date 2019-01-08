@@ -67,6 +67,7 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
                 $('#custom-chart-tooltip').css('left', evt.pageX + 'px');
                 $('#custom-chart-tooltip').css('top', evt.pageY + 'px');
                 $('#custom-chart-tooltip').addClass('active').html('Click to show/hide Charge Type');
+                $('body').css('cursor','pointer');
             }
         },
         tooltips: {
@@ -220,7 +221,7 @@ ctx.onclick = function(evt){
 document.getElementById('totalscircle').oncontextmenu = function(evt) {
    evt.preventDefault(); 
 
-  totalscirclemenu.style.left = evt.pageX + 'px';
+  totalscirclemenu.style.left = (evt.pageX - 60)+ 'px';
   totalscirclemenu.style.top = evt.pageY + 'px';
 
   totalscirclemenu.style.display = 'block';
@@ -231,6 +232,7 @@ document.getElementById('totalscircle').oncontextmenu = function(evt) {
 $('body').on('mousemove', function(evt) {
   let target = myChart.getDatasetAtEvent(evt);
   $('#custom-chart-tooltip').removeClass('active').html('');
+  $('body').css('cursor','default');
 });
 
 

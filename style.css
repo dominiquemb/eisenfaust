@@ -74,7 +74,7 @@ a:hover {
     border-radius: 4px;
     padding: 3px 8px;
     color: #fff;
-    max-width: 200px;
+    width: 210px;
     position: absolute;
     z-index: 99;
 }
@@ -148,3 +148,6 @@ a:hover {
     display: block;
 }
 
+#totalscircle-context-menu {
+    width: 125px;
+}
