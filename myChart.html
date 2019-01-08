@@ -13,10 +13,20 @@
 </head>
 
 <body>
+    <div id="totalscircle">
+        <span class="totalscircle-value">1000</span>        
+    </div>
+
     <div id="custom-chart-tooltip">
     </div>
 
     <div id="chart-legends"></div>
+
+    <div id="totalscircle-context-menu" class="context-menu">
+        <ul>
+            <li><a id="changelimit" href="#" data-toggle="modal" data-target="#changelimitmodal">Change Limit</a></li>
+        </ul>
+    </div>
 
     <div id="transfer-context-menu" class="context-menu">
         <ul>
@@ -41,6 +51,23 @@
     <div id="dragndrophowmuch" title="Enter amount">
         <p>How much do you want to move?</p>
         <input type="text" id="dragndrophowmuch_value" />
+    </div>
+
+    <div class="modal" id="changelimitmodal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="newlimit">New limit:</label>
+                        <input id="newlimit" class="form-control">
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" id="executenewlimit" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        <button type="button" id="onCancel" class="btn btn-primary btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="modal" id="newchargetypemodal">

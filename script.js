@@ -208,9 +208,22 @@ ctx.ondragover = function(e) {
 // Context Menu
 let menu = document.getElementById('chargetype-context-menu');
 let transfermenu = document.getElementById('transfer-context-menu');
+let totalscirclemenu = document.getElementById('totalscircle-context-menu');
 let target_elem = null;
 
 ctx.onclick = function(evt){
+  menu.style.display = 'none';
+  transfermenu.style.display = 'none';
+  totalscirclemenu.style.display = 'none';
+};
+
+document.getElementById('totalscircle').oncontextmenu = function(evt) {
+   evt.preventDefault(); 
+
+  totalscirclemenu.style.left = evt.pageX -  + 'px';
+  totalscirclemenu.style.top = evt.pageY + 'px';
+
+  totalscirclemenu.style.display = 'block';
   menu.style.display = 'none';
   transfermenu.style.display = 'none';
 };
@@ -302,6 +315,24 @@ executetransfer.on('click', function(e){
 
   transfermenu.style.display = 'none';
 });
+
+// Adjust total charge type value limit
+let executechangelimit = $('#executechangelimit');
+
+executechangelimit.on('click', function(e){
+  let newlimit = parseInt($('#newlimit').val());
+
+  if (newlimit !== '') {
+    $('#totalscircle').find('span').html(newlimit);
+  } else {
+    e.preventDefault();
+  }
+
+  $('#newlimit').val('');
+
+  totalscirclemenu.style.display = 'none';
+});
+
 
 // Create a new Charge Type
 let executenewchargetype = $('#executenewchargetype');
