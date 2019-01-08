@@ -83,12 +83,16 @@ a:hover {
     display: block;
 }
 
+#transfermodal .modal-dialog {
+    width: 460px;
+}
+
 #transfermodal .transferamount {
     padding-top: 10px;
     clear: both;
     margin: auto;
     float: none;
-    width: 175px;
+    width: 250px;
 }
 
 .modal-buttons {
@@ -143,4 +147,4 @@ a:hover {
     margin: auto;
     display: block;
 }
-}
+
