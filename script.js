@@ -57,7 +57,8 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
                 for (x; x < myChart.data.datasets[i].data.length; x++) {
                     chargeTypeTotal[i] += myChart.data.datasets[i].data[x]; 
                 }
-                myChart.data.datasets[i].label = myChart.data.datasets[i].label + ' ($' + chargeTypeTotal[i] + ')';
+                var labelWithoutTotal = myChart.data.datasets[i].label.split(' (')[0];
+                myChart.data.datasets[i].label = labelWithoutTotal + ' ($' + chargeTypeTotal[i] + ')';
             }
             myChart.update();
         },
@@ -234,6 +235,8 @@ submit_btn.onclick = function(e){
   if (selected_label && target_elem && value_input.value !== '') {
     myChart.data.datasets[selected_label.value].data[target_elem._index] += parseInt(value_input.value);
     myChart.update();
+    myChart.generateLegend();
+    calculateChargeTypeTotal(defaultlimit);
   } else {
     e.preventDefault();
   }
@@ -284,9 +287,11 @@ executedeletefromchargetype.onclick = function(e){
   let selected_label = document.getElementById('delete_from_chartLabels'),
       value_input = document.getElementById('delete_from_chartValue');
 
-  if (selected_label && target_elem && value_input.value !== '') {
+  if (selected_label && target_elem && value_input.value !== '' && value_input.value <= myChart.data.datasets[selected_label.value].data[target_elem._index]) {
     myChart.data.datasets[selected_label.value].data[target_elem._index] -= parseInt(value_input.value);
     myChart.update();
+    myChart.generateLegend();
+    calculateChargeTypeTotal(defaultlimit);
   } else {
     e.preventDefault();
   }
