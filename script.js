@@ -83,45 +83,30 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
       }
     });
     
-myChart.generateLegend();
-
-// Select init
-let chartLabels = document.getElementsByClassName('chargetypeselect');
-$.each(chartLabels, function(selectindex, select) {
-    myChart.data.datasets.forEach(function(el, i) {
-      let option = document.createElement('option');
-      option.value = i;
-      option.text = el.label.split(' (')[0];
-      chartLabels[selectindex].appendChild(option);
+let initSelects = function() {
+    // Select init
+    let chartLabels = document.getElementsByClassName('chargetypeselect');
+    $.each(chartLabels, function(selectindex, select) {
+        $(select).find('option').remove();
+        myChart.data.datasets.forEach(function(el, i) {
+          let option = document.createElement('option');
+          option.value = i;
+          option.text = el.label.split(' (')[0];
+          chartLabels[selectindex].appendChild(option);
+        });
     });
-});
 
-let accountselects = document.getElementsByClassName('accountselect');
-$.each(accountselects, function(selectindex, select) {
-    myChart.data.labels.forEach(function(el, i){
-      let option = document.createElement('option');
-      option.value = i;
-      option.text = el;
-      accountselects[selectindex].appendChild(option);
+    let accountselects = document.getElementsByClassName('accountselect');
+    $.each(accountselects, function(selectindex, select) {
+        $(select).find('option').remove();
+        myChart.data.labels.forEach(function(el, i){
+          let option = document.createElement('option');
+          option.value = i;
+          option.text = el;
+          accountselects[selectindex].appendChild(option);
+        });
     });
-});
-/*
-let chargetype = document.getElementById('chargetype');
-myChart.data.datasets.forEach(function(el, i){
-  let option = document.createElement('option');
-  option.value = i;
-  option.text = el.label.split(' (')[0];
-  chargetype.appendChild(option);
-});
-
-let transferto = document.getElementById('transferto');
-myChart.data.labels.forEach(function(el, i){
-  let option = document.createElement('option');
-  option.value = i;
-  option.text = el;
-  transferto.appendChild(option);
-});
-*/
+}
 
 // Drag & Drop
 function allowDrop(e) {
@@ -337,9 +322,9 @@ executetransfer.on('click', function(e){
 // Adjust total charge type value limit
 let executechangelimit = $('#executenewlimit');
 let defaultlimit = 50000;
-$('#newlimit').val(defaultlimit);
 
-let calculateChargeTypeTotal = function() {
+let calculateChargeTypeTotal = function(limit) {
+    $('#newlimit').val(limit);
     let chargeTypeTotal = 0;
     let chargeTypeValues = {};
 
@@ -356,30 +341,29 @@ let calculateChargeTypeTotal = function() {
 
     $('#totalscircle').find('span').html(chargeTypeTotal);
 
-    if (chargeTypeTotal < defaultlimit) {
+    if (chargeTypeTotal < limit) {
         $('#totalscircle').addClass('red');
         $('#totalscircle').removeClass('green');
         $('#totalscircle').removeClass('blue');
     }
-    if (chargeTypeTotal == defaultlimit) {
+    if (chargeTypeTotal == limit) {
         $('#totalscircle').addClass('green');
         $('#totalscircle').removeClass('red');
         $('#totalscircle').removeClass('blue');
     }
-    if (chargeTypeTotal > defaultlimit) {
+    if (chargeTypeTotal > limit) {
         $('#totalscircle').addClass('blue');
         $('#totalscircle').removeClass('green');
         $('#totalscircle').removeClass('red');
     }
 }
 
-calculateChargeTypeTotal();
-
 executechangelimit.on('click', function(e){
   let newlimit = parseInt($('#newlimit').val());
   if (newlimit !== '') {
     defaultlimit = newlimit;
-    calculateChargeTypeTotal();
+    calculateChargeTypeTotal(defaultlimit);
+    $('#newlimit').val(defaultlimit);
   } else {
     e.preventDefault();
   }
@@ -416,6 +400,8 @@ executenewchargetype.on('click', function(e){
       }
     );
     myChart.update();
+    initSelects();
+    calculateChargeTypeTotal(defaultlimit);
   } else {
     e.preventDefault();
   }
@@ -504,3 +490,8 @@ function getRandomRgb() {
 
 window.openTip = openTip;
 window.closeTop = closeTip;
+
+myChart.generateLegend();
+initSelects();
+calculateChargeTypeTotal(defaultlimit);
+
