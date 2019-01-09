@@ -129,6 +129,7 @@ function allowDrop(e) {
 }
 
 let dragdrop_elem = null;
+let dropPoint = null;
 
 function drag(e) {
   dragdrop_elem = myChart.getElementAtEvent(e)[0];
@@ -138,58 +139,10 @@ function drag(e) {
 
 function drop(e) {
   e.preventDefault();
-  let dropPoint = myChart.getElementAtEvent(e)[0];
+  dropPoint = myChart.getElementAtEvent(e)[0];
   if (dropPoint){
     $('#custom-chart-tooltip').removeClass('active').html('');
-    $('#dragndropconfirm').dialog(
-       {
-          resizable: false,
-          height: "auto",
-          modal: true,
-          buttons: {
-            "Yes": function() {
-              $( this ).dialog( "close" );
-                let value = myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index];
-                myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
-                myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
-                myChart.update();
-/*
-                setTimeout(function() {
-                    openTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
-                }, 300);
-*/
-            },
-            "No": function() {
-              $( this ).dialog( "close" );
-              $('#dragndrophowmuch').dialog({
-                resizable: false,
-                height: "auto",
-                modal: true,
-                buttons: {
-                    "Submit": function() {
-                        let value = parseFloat($('#dragndrophowmuch_value').val());
-                        $(this).dialog("close");
-                        if (value <= myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index]) {
-                            myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
-                            myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
-                            myChart.update();
-                        }
-                        $('#custom-chart-tooltip').removeClass('active').html('');
-/*
-                        setTimeout(function() {
-                            openTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
-                        }, 300);
-*/
-                    },
-                    "Cancel": function() {
-                        $(this).dialog('close');
-                    }
-                }
-              })
-            }
-          }
-       }
-      );
+    $('#dragndropconfirm').modal('show');
   }
 }
 
@@ -304,6 +257,40 @@ submit_btn.onclick = function(e){
   value_input.value = '';
   menu.style.display = 'none';
 };
+
+// Transfer whole amount (drag and drop from one charge type to another)
+let executetransferwholeamount = document.getElementById('executetransferwholeamount');
+
+executetransferwholeamount.onclick = function(e) {
+    let value = myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index];
+    myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
+    myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
+    myChart.update();
+}
+
+// transfer specific amount (drag and drop from one charge type to another)
+let executetransferspecificamount = document.getElementById('executetransferspecificamount');
+
+executetransferspecificamount.onclick = function(e) {
+        $('#dragndropconfirm').modal('hide');
+        $('#dragndrophowmuch').modal('hide');
+        let value = parseFloat($('#dragndrophowmuch_value').val());
+        if (value <= myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index]) {
+            myChart.data.datasets[dragdrop_elem._datasetIndex].data[dropPoint._index] += value;
+            myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] -= value;
+            myChart.update();
+        }
+        $('#custom-chart-tooltip').removeClass('active').html('');
+}
+
+// click callback to show "how much do you want to transfer?" modal
+let transferspecificamount = document.getElementById('transferspecificamount');
+
+transferspecificamount.onclick = function(e) {
+    $('#dragndropconfirm').modal('hide');
+}
+
+
 
 // Delete amoutn from charge type
 let executedeletefromchargetype = document.getElementById('executedeletefromchargetype');

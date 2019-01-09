@@ -152,3 +152,15 @@ a:hover {
 #totalscircle-context-menu {
     width: 125px;
 }
+
+#dragndropconfirm .form-group {
+    width: 100%;
+}
+
+#dragndrophowmuch .modal-dialog {
+    width: 300px;
+}
+
+#dragndrophowmuch .form-group {
+    width: 100%;
+}
