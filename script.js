@@ -1,39 +1,39 @@
-let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account E'],
-    acctcash = [100, 200, 300, 400, 500],
-    invest = [1000, 2000, 3000, 4000, 5000],
-    credits = [111, 222, 333, 444, 555],
-    ious = [345, 456, 918, 297, 282],
-    interest = [115, 215, 315, 425, 551],
+let daysofweek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    projectA = [4, 3, 2, 2, 2],
+    projectB = [1, 1, 3, 5, 3],
+    projectC = [2, 3, 1, 2, 4],
+    projectD = [1, 1, 2, 1, 0],
+    training = [3, 2, 4, 2, 0],
 
     ctx = document.getElementById("myChart"),
     myChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: accountnames,
+        labels: daysofweek,
         datasets: [
           {
-            data: acctcash,
-            label: "Cash",
+            data: projectA,
+            label: "Project A",
             backgroundColor: "rgba(20,40,60,.8)",
           },
           {
-            data: invest,
-            label: "Investments",
+            data: projectB,
+            label: "Project B",
             backgroundColor: "rgba(118,0,0,.8)",
           },
           {
-            data: credits,
-            label: "Credits",
+            data: projectC,
+            label: "Project C",
             backgroundColor: "rgba(2,2,2.8)",
           },
           {
-            data: ious,
-            label: "Owings",
+            data: projectD,
+            label: "Project D",
             backgroundColor: "rgba(53,114,102,.8)"
           },
           {
-            data: interest,
-            label: "Interests",
+            data: training,
+            label: "Training",
             backgroundColor: "rgba(163,187,173,.8)",
           }
         ]
@@ -49,16 +49,16 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
         legendCallback: function(chart) {
             var i = 0;
             var x = 0;
-            var chargeTypeTotal = {};
+            var projectsTotal = {};
 
             for (i; i < myChart.data.datasets.length; i++) {
                 x = 0;
-                chargeTypeTotal[i] = 0;
+                projectsTotal[i] = 0;
                 for (x; x < myChart.data.datasets[i].data.length; x++) {
-                    chargeTypeTotal[i] += myChart.data.datasets[i].data[x]; 
+                    projectsTotal[i] += myChart.data.datasets[i].data[x]; 
                 }
                 var labelWithoutTotal = myChart.data.datasets[i].label.split(' (')[0];
-                myChart.data.datasets[i].label = labelWithoutTotal + ' ($' + chargeTypeTotal[i] + ')';
+                myChart.data.datasets[i].label = labelWithoutTotal + ' (' + projectsTotal[i] + ' hours)';
             }
             myChart.update();
         },
@@ -67,7 +67,7 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
                 evt.stopPropagation();
                 $('#custom-chart-tooltip').css('left', evt.pageX + 'px');
                 $('#custom-chart-tooltip').css('top', evt.pageY + 'px');
-                $('#custom-chart-tooltip').addClass('active').html('Click to show/hide Charge Type');
+                $('#custom-chart-tooltip').addClass('active').html('Click to show/hide Project');
                 $('body').css('cursor','pointer');
             }
         },
@@ -77,7 +77,7 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
             callbacks: {
                 label: function(tooltipItem, data) {
                     var labelWithoutTotal = data.datasets[tooltipItem.datasetIndex].label.split(' (')[0];
-                    return labelWithoutTotal + ': $' + tooltipItem.yLabel;
+                    return labelWithoutTotal + ': ' + tooltipItem.yLabel + ' hours';
                 }
             }
         }
@@ -86,7 +86,7 @@ let accountnames = ['Account A', 'Account B', 'Account C', 'Account D', 'Account
     
 let initSelects = function() {
     // Select init
-    let chartLabels = document.getElementsByClassName('chargetypeselect');
+    let chartLabels = document.getElementsByClassName('projectsselect');
     $.each(chartLabels, function(selectindex, select) {
         $(select).find('option').remove();
         myChart.data.datasets.forEach(function(el, i) {
@@ -97,14 +97,14 @@ let initSelects = function() {
         });
     });
 
-    let accountselects = document.getElementsByClassName('accountselect');
-    $.each(accountselects, function(selectindex, select) {
+    let daysselects = document.getElementsByClassName('daysselect');
+    $.each(daysselects, function(selectindex, select) {
         $(select).find('option').remove();
         myChart.data.labels.forEach(function(el, i){
           let option = document.createElement('option');
           option.value = i;
           option.text = el;
-          accountselects[selectindex].appendChild(option);
+          daysselects[selectindex].appendChild(option);
         });
     });
 }
@@ -148,7 +148,7 @@ ctx.ondragover = function(e) {
 };
 
 // Context Menu
-let menu = document.getElementById('chargetype-context-menu');
+let menu = document.getElementById('project-context-menu');
 let transfermenu = document.getElementById('transfer-context-menu');
 let totalscirclemenu = document.getElementById('totalscircle-context-menu');
 let target_elem = null;
@@ -194,12 +194,12 @@ ctx.oncontextmenu = function(e){
 
   if (target_elem) {
 //    chartLabels.options[target_elem._datasetIndex].selected = 'selected';
-    $('.chargetypeselect').each(function(index, select) {
+    $('.projectsselect').each(function(index, select) {
         $(select).val(target_elem._datasetIndex);
     });
-    var chargeType = target_elem._model.datasetLabel.split(' (')[0];
-    $(menu).find('#addElem').html('Add to ' + chargeType + ' in ' + target_elem._model.label);
-    $(menu).find('#deleteElem').html('Delete from ' + chargeType + ' in ' + target_elem._model.label);
+    var project = target_elem._model.datasetLabel.split(' (')[0];
+    $(menu).find('#addElem').html('Add to ' + project + ' on ' + target_elem._model.label);
+    $(menu).find('#deleteElem').html('Delete from ' + project + ' on ' + target_elem._model.label);
     transfermenu.style.display = 'none';
     menu.style.display = 'block';
   }
@@ -236,7 +236,7 @@ submit_btn.onclick = function(e){
     myChart.data.datasets[selected_label.value].data[target_elem._index] += parseInt(value_input.value);
     myChart.update();
     myChart.generateLegend();
-    calculateChargeTypeTotal(defaultlimit);
+    calculateProjectTotal(defaultlimit);
   } else {
     e.preventDefault();
   }
@@ -280,10 +280,10 @@ transferspecificamount.onclick = function(e) {
 
 
 
-// Delete amoutn from charge type
-let executedeletefromchargetype = document.getElementById('executedeletefromchargetype');
+// Delete hours from project
+let executedeletefromproject = document.getElementById('executedeletefromproject');
 
-executedeletefromchargetype.onclick = function(e){
+executedeletefromproject.onclick = function(e){
   let selected_label = document.getElementById('delete_from_chartLabels'),
       value_input = document.getElementById('delete_from_chartValue');
 
@@ -291,7 +291,7 @@ executedeletefromchargetype.onclick = function(e){
     myChart.data.datasets[selected_label.value].data[target_elem._index] -= parseInt(value_input.value);
     myChart.update();
     myChart.generateLegend();
-    calculateChargeTypeTotal(defaultlimit);
+    calculateProjectTotal(defaultlimit);
   } else {
     e.preventDefault();
   }
@@ -307,13 +307,13 @@ let executetransfer = $('#executetransfer');
 
 executetransfer.on('click', function(e){
   let transferfrom = parseInt($('#transferfrom').val()),
-      chargetype = parseInt($('#chargetype').val()),
+      project = parseInt($('#project').val()),
       transferto = parseInt($('#transferto').val()),
       transferamount = parseFloat($('#transferamount_textfield').val());
 
-  if (transferamount !== '' && transferamount <= myChart.data.datasets[chargetype].data[transferfrom]) {
-    myChart.data.datasets[chargetype].data[transferfrom] -= parseFloat(transferamount);
-    myChart.data.datasets[chargetype].data[transferto] += parseFloat(transferamount);
+  if (transferamount !== '' && transferamount <= myChart.data.datasets[project].data[transferfrom]) {
+    myChart.data.datasets[project].data[transferfrom] -= parseFloat(transferamount);
+    myChart.data.datasets[project].data[transferto] += parseFloat(transferamount);
     myChart.update();
   } else {
     e.preventDefault();
@@ -324,39 +324,39 @@ executetransfer.on('click', function(e){
   transfermenu.style.display = 'none';
 });
 
-// Adjust total charge type value limit
+// Adjust total project hours limit
 let executechangelimit = $('#executenewlimit');
-let defaultlimit = 50000;
+let defaultlimit = 40;
 
-let calculateChargeTypeTotal = function(limit) {
+let calculateProjectTotal = function(limit) {
     $('#newlimit').val(limit);
-    let chargeTypeTotal = 0;
-    let chargeTypeValues = {};
+    let projectsTotal = 0;
+    let projectValues = {};
 
     $.each(myChart.data.datasets, function(i, dataset) {
-        chargeTypeValues[i] = 0;
+        projectValues[i] = 0;
         $.each(myChart.data.datasets[i].data, function(x, data) {
-            chargeTypeValues[i] += myChart.data.datasets[i].data[x]; 
+            projectValues[i] += myChart.data.datasets[i].data[x]; 
         });
     });
 
-    $.each(chargeTypeValues, function(chargeTypeId, total) {
-       chargeTypeTotal += total; 
+    $.each(projectValues, function(projectId, total) {
+       projectsTotal += total; 
     });
 
-    $('#totalscircle').find('span').html(chargeTypeTotal);
+    $('#totalscircle').find('span').html(projectsTotal);
 
-    if (chargeTypeTotal < limit) {
+    if (projectsTotal < limit) {
         $('#totalscircle').addClass('red');
         $('#totalscircle').removeClass('green');
         $('#totalscircle').removeClass('blue');
     }
-    if (chargeTypeTotal == limit) {
+    if (projectsTotal == limit) {
         $('#totalscircle').addClass('green');
         $('#totalscircle').removeClass('red');
         $('#totalscircle').removeClass('blue');
     }
-    if (chargeTypeTotal > limit) {
+    if (projectsTotal > limit) {
         $('#totalscircle').addClass('blue');
         $('#totalscircle').removeClass('green');
         $('#totalscircle').removeClass('red');
@@ -367,7 +367,7 @@ executechangelimit.on('click', function(e){
   let newlimit = parseInt($('#newlimit').val());
   if (newlimit !== '') {
     defaultlimit = newlimit;
-    calculateChargeTypeTotal(defaultlimit);
+    calculateProjectTotal(defaultlimit);
     $('#newlimit').val(defaultlimit);
   } else {
     e.preventDefault();
@@ -379,19 +379,19 @@ executechangelimit.on('click', function(e){
 });
 
 
-// Create a new Charge Type
-let executenewchargetype = $('#executenewchargetype');
+// Create a new Project
+let executenewproject = $('#executenewproject');
 
-executenewchargetype.on('click', function(e){
-  let customchargetypename = $('#customchargetypename').val(),
-      newchargetypeamount = parseFloat($('#newchargetypeamount').val()),
-      newchargetypeaccount = parseInt($('#newchargetypeaccount').val());
+executenewproject.on('click', function(e){
+  let customprojectname = $('#customprojectname').val(),
+      newprojectamount = parseFloat($('#newprojectamount').val()),
+      newprojectday = parseInt($('#newprojectday').val());
 
-  if (newchargetypeamount !== '') {
+  if (newprojectamount !== '') {
     let dataObject = []; 
-    $.each(myChart.data.datasets, function(index, accountamount) {
-        if (index == newchargetypeaccount) {
-            dataObject.push(newchargetypeamount);
+    $.each(myChart.data.datasets, function(index, dayhours) {
+        if (index == newprojectday) {
+            dataObject.push(newprojectamount);
         }
         else {
             dataObject.push(0);
@@ -400,19 +400,19 @@ executenewchargetype.on('click', function(e){
     myChart.data.datasets.push(
       {
         data: dataObject,
-        label: customchargetypename + ' ($' + newchargetypeamount + ')',
+        label: customprojectname + ' (' + newprojectamount + ' hours)',
         backgroundColor: getRandomRgb('.8'),
       }
     );
     myChart.update();
     initSelects();
-    calculateChargeTypeTotal(defaultlimit);
+    calculateProjectTotal(defaultlimit);
   } else {
     e.preventDefault();
   }
 
-  $('#newchargetypeamount').val('');
-  $('#customchargetypename').val('');
+  $('#newprojectamount').val('');
+  $('#customprojectname').val('');
 
   transfermenu.style.display = 'none';
 });
@@ -498,5 +498,5 @@ window.closeTop = closeTip;
 
 myChart.generateLegend();
 initSelects();
-calculateChargeTypeTotal(defaultlimit);
+calculateProjectTotal(defaultlimit);
 

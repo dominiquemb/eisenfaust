@@ -11,7 +11,7 @@
 
 <body>
     <div id="totalscircle">
-        <span class="totalscircle-value">1000</span>        
+        <span class="totalscircle-value"></span>        
     </div>
 
     <div id="custom-chart-tooltip">
@@ -27,15 +27,15 @@
 
     <div id="transfer-context-menu" class="context-menu">
         <ul>
-            <li><a id="transferanamount" href="#" data-toggle="modal" data-target="#transfermodal">Transfer an Amount</a></li>
-            <li><a id="addanewchargetype" data-toggle="modal" data-target="#newchargetypemodal" href="#">Add a new Charge Type</a></li>
+            <li><a id="transferhours" href="#" data-toggle="modal" data-target="#transfermodal">Transfer Hours</a></li>
+            <li><a id="addanewproject" data-toggle="modal" data-target="#newprojectmodal" href="#">Add a new Project</a></li>
         </ul>
     </div>
 
-    <div id="chargetype-context-menu" class="context-menu">
+    <div id="project-context-menu" class="context-menu">
         <ul>
             <li><a id="addElem" href="#" data-toggle="modal" data-target="#exampleModal">Add</a></li>
-            <li><a id="deleteElem" href="#" data-toggle="modal" data-target="#deletefromchargetype">Delete</a></li>
+            <li><a id="deleteElem" href="#" data-toggle="modal" data-target="#deletefromproject">Delete</a></li>
         </ul>
     </div>
 
@@ -46,7 +46,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="dragndrophowmuch_value">How much do you want to move?</label>
+                        <label for="dragndrophowmuch_value">How many hours do you want to move?</label>
                         <input id="dragndrophowmuch_value" class="form-control">
                     </div>
                     <div class="modal-buttons">
@@ -63,7 +63,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Do you want to move the whole amount?</label>
+                        <label>Do you want to move all the hours in this project?</label>
                     </div>
                     <div class="modal-buttons">
                         <button type="button" id="executetransferwholeamount" class="btn btn-primary" data-dismiss="modal">Yes</button>
@@ -93,25 +93,25 @@
         </div>
     </div>
 
-    <div class="modal" id="newchargetypemodal">
+    <div class="modal" id="newprojectmodal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="customchargetypename">Custom name:</label>
-                        <input id="customchargetypename" class="form-control">
+                        <label for="customprojectname">Project name:</label>
+                        <input id="customprojectname" class="form-control">
                     </div>
                     <div class="form-group amount">
-                        <label for="newchargetypeamount">Amount:</label>
+                        <label for="newprojectamount">Hours worked:</label>
 
-                        <input id="newchargetypeamount" class="form-control">
+                        <input id="newprojectamount" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="">Account:</label>
-                        <select class="form-control accountselect" id="newchargetypeaccount"></select>
+                        <label for="">Weekday:</label>
+                        <select class="form-control daysselect" id="newprojectday"></select>
                     </div>
                     <div class="modal-buttons">
-                        <button type="button" id="executenewchargetype" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        <button type="button" id="executenewproject" class="btn btn-primary" data-dismiss="modal">OK</button>
                         <button type="button" id="onCancel" class="btn btn-primary btn-danger" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
@@ -125,18 +125,18 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="transferfrom">Transfer from:</label>
-                        <select class="form-control accountselect" id="transferfrom"></select>
+                        <select class="form-control daysselect" id="transferfrom"></select>
                     </div>
                     <div class="form-group">
-                        <label for="chargetype">Charge type:</label>
-                        <select class="form-control chargetypeselect" id="chargetype"></select>
+                        <label for="project">Project:</label>
+                        <select class="form-control projectsselect" id="project"></select>
                     </div>
                     <div class="form-group">
                         <label for="transferto">Transfer to:</label>
-                        <select class="form-control accountselect" id="transferto"></select>
+                        <select class="form-control daysselect" id="transferto"></select>
                     </div>
                     <div class="form-group transferamount">
-                        <label for="transferamount_textfield">Transfer amount:</label>
+                        <label for="transferamount_textfield">Hours:</label>
                         <input id="transferamount_textfield" class="form-control">
                     </div>
                     <div class="modal-buttons">
@@ -148,18 +148,18 @@
         </div>
     </div>
 
-    <div class="modal" id="deletefromchargetype">
+    <div class="modal" id="deletefromproject">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group">
-                        <select class="form-control chargetypeselect" id="delete_from_chartLabels"></select>
+                        <select class="form-control projectsselect" id="delete_from_chartLabels"></select>
                     </div>
                     <div class="form-group chartvalue">
                         <input id="delete_from_chartValue" class="form-control">
                     </div>
                     <div class="form-group">
-                        <button type="button" id="executedeletefromchargetype" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        <button type="button" id="executedeletefromproject" class="btn btn-primary" data-dismiss="modal">OK</button>
                         <button type="button" id="onCancel" class="btn btn-primary btn-danger" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
@@ -173,7 +173,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group">
-                        <select class="form-control chargetypeselect" id="chartLabels"></select>
+                        <select class="form-control projectsselect" id="chartLabels"></select>
                     </div>
                     <div class="form-group chartvalue">
                         <input id="chartValue" class="form-control">
