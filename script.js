@@ -1,38 +1,95 @@
-let daysofweek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    projectA = [4, 3, 2, 2, 2],
-    projectB = [1, 1, 3, 5, 3],
-    projectC = [2, 3, 1, 2, 4],
-    projectD = [1, 1, 2, 1, 0],
-    training = [3, 2, 4, 2, 0],
+let daysofweek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+let myChart = {};
+let ctx = {}; 
+let defaultlimit = null;
+let currentChartId = false;
 
-    ctx = document.getElementById("myChart"),
-    myChart = new Chart(ctx, {
+let getHoursString = function(hours) {
+  hours = parseInt(hours);
+  if (typeof hours == "number") {
+	if (hours > 1 || hours == 0) {
+		return "hours";
+	}
+	else if (hours == 1) {
+		return "hour";
+	}
+  }
+}
+
+let getMyChart = function() {
+	return myChart;
+}
+
+let chartObjects = {};
+
+let chartData = [
+   {
+	element: document.getElementById("person_a_chart"),
+	id: "person_a_chart",
+	defaultlimit: 40,
+	data: {
+		projectA: [4, 3, 2, 2, 2],
+		projectB: [1, 1, 3, 5, 3],
+		projectC: [2, 3, 1, 2, 4],
+		projectD: [1, 1, 2, 1, 0],
+		training: [3, 2, 4, 2, 0]
+	}
+  },
+  {
+	element: document.getElementById("person_b_chart"),
+	id: "person_b_chart",
+	defaultlimit: 80,
+	data: {
+		projectA: [2, 3, 1, 2, 1],
+		projectB: [1, 4, 3, 5, 3],
+		projectC: [6, 3, 4, 2, 2],
+		projectD: [1, 2, 2, 1, 0],
+		training: [3, 2, 3, 2, 3]
+	}
+  },
+  {
+	element: document.getElementById("person_c_chart"),
+	id: "person_c_chart",
+	defaultlimit: 30,
+	data: {
+		projectA: [4, 3, 2, 2, 2],
+		projectB: [1, 1, 3, 5, 3],
+		projectC: [2, 3, 1, 2, 4],
+		projectD: [1, 1, 2, 1, 0],
+		training: [3, 2, 4, 2, 0]
+	}
+  }
+];
+
+
+$.each(chartData, function(index, chartObject) {
+    chartObjects[chartObject.id] = new Chart(chartObject.element, {
       type: 'bar',
       data: {
         labels: daysofweek,
         datasets: [
           {
-            data: projectA,
+            data: chartObject.data.projectA,
             label: "Project A",
             backgroundColor: "rgba(20,40,60,.8)",
           },
           {
-            data: projectB,
+            data: chartObject.data.projectB,
             label: "Project B",
             backgroundColor: "rgba(118,0,0,.8)",
           },
           {
-            data: projectC,
+            data: chartObject.data.projectC,
             label: "Project C",
             backgroundColor: "rgba(2,2,2.8)",
           },
           {
-            data: projectD,
+            data: chartObject.data.projectD,
             label: "Project D",
             backgroundColor: "rgba(53,114,102,.8)"
           },
           {
-            data: training,
+            data: chartObject.data.training,
             label: "Training",
             backgroundColor: "rgba(163,187,173,.8)",
           }
@@ -50,7 +107,7 @@ let daysofweek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
             var i = 0;
             var x = 0;
             var projectsTotal = {};
-
+//	var myChart = chartObjects[chartObject.id];
             for (i; i < myChart.data.datasets.length; i++) {
                 x = 0;
                 projectsTotal[i] = 0;
@@ -58,7 +115,7 @@ let daysofweek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                     projectsTotal[i] += myChart.data.datasets[i].data[x]; 
                 }
                 var labelWithoutTotal = myChart.data.datasets[i].label.split(' (')[0];
-                myChart.data.datasets[i].label = labelWithoutTotal + ' (' + projectsTotal[i] + ' hours)';
+                myChart.data.datasets[i].label = labelWithoutTotal + ' (' + projectsTotal[i] + ' ' + getHoursString(projectsTotal[i]) + ')';
             }
             myChart.update();
         },
@@ -77,13 +134,66 @@ let daysofweek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
             callbacks: {
                 label: function(tooltipItem, data) {
                     var labelWithoutTotal = data.datasets[tooltipItem.datasetIndex].label.split(' (')[0];
-                    return labelWithoutTotal + ': ' + tooltipItem.yLabel + ' hours';
+                    return labelWithoutTotal + ': ' + tooltipItem.yLabel + ' ' + getHoursString(tooltipItem.yLabel);
                 }
             }
         }
       }
     });
-    
+
+	document.getElementById(chartObject.id).draggable = true;
+
+	document.getElementById(chartObject.id).ondragstart = function(e){
+	  drag(e);
+
+	};
+
+	document.getElementById(chartObject.id).ondrop = function(e){
+	  drop(e);
+	};
+
+	document.getElementById(chartObject.id).ondragover = function(e) {
+	  allowDrop(e);
+	};
+
+	document.getElementById(chartObject.id).onclick = function(evt){
+	  menu.style.display = 'none';
+	  transfermenu.style.display = 'none';
+	  totalscirclemenu.style.display = 'none';
+	};
+
+	document.getElementById(chartObject.id).oncontextmenu = function(e){
+	  e.preventDefault();
+	  let rect = ctx.getBoundingClientRect(),
+	      x = e.clientX - rect.left,
+	      y = e.clientY - rect.top;
+
+	  menu.style.left = x + 1 + 'px';
+	  menu.style.top = y + 1 + 'px';
+
+	  transfermenu.style.left = x + 1 + 'px';
+	  transfermenu.style.top = y + 1 + 'px';
+
+	  target_elem = myChart.getElementAtEvent(e)[0];
+
+	  if (target_elem) {
+	    $('.projectsselect').each(function(index, select) {
+		$(select).val(target_elem._datasetIndex);
+	    });
+	    var project = target_elem._model.datasetLabel.split(' (')[0];
+	    $(menu).find('#addElem').html('Add to ' + project + ' on ' + target_elem._model.label);
+	    $(menu).find('#deleteElem').html('Delete from ' + project + ' on ' + target_elem._model.label);
+	    transfermenu.style.display = 'none';
+	    menu.style.display = 'block';
+	  }
+	  else {
+	    menu.style.display = 'none';
+	    transfermenu.style.display = 'block';
+	  }
+	};
+
+});
+
 let initSelects = function() {
     // Select init
     let chartLabels = document.getElementsByClassName('projectsselect');
@@ -120,7 +230,9 @@ let dropPoint = null;
 function drag(e) {
   dragdrop_elem = myChart.getElementAtEvent(e)[0];
   closeTip(myChart, dragdrop_elem._datasetIndex, dragdrop_elem._index);
-  $('#custom-chart-tooltip').addClass('active').html('$' + myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' from ' + dragdrop_elem._model.label);
+  var hoursString = getHoursString(myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index]);
+
+  $('#custom-chart-tooltip').addClass('active').html(myChart.data.datasets[dragdrop_elem._datasetIndex].data[dragdrop_elem._index] + ' ' + hoursString + ' from ' + dragdrop_elem._model.label);
 }
 
 function drop(e) {
@@ -132,32 +244,12 @@ function drop(e) {
   }
 }
 
-ctx.draggable = true;
-
-ctx.ondragstart = function(e){
-  drag(e);
-
-};
-
-ctx.ondrop = function(e){
-  drop(e);
-};
-
-ctx.ondragover = function(e) {
-  allowDrop(e);
-};
-
 // Context Menu
 let menu = document.getElementById('project-context-menu');
 let transfermenu = document.getElementById('transfer-context-menu');
 let totalscirclemenu = document.getElementById('totalscircle-context-menu');
 let target_elem = null;
 
-ctx.onclick = function(evt){
-  menu.style.display = 'none';
-  transfermenu.style.display = 'none';
-  totalscirclemenu.style.display = 'none';
-};
 
 document.getElementById('totalscircle').oncontextmenu = function(evt) {
    evt.preventDefault(); 
@@ -177,37 +269,6 @@ $('body').on('mousemove', function(evt) {
 });
 
 
-
-ctx.oncontextmenu = function(e){
-  e.preventDefault();
-  let rect = ctx.getBoundingClientRect(),
-      x = e.clientX - rect.left,
-      y = e.clientY - rect.top;
-
-  menu.style.left = x + 1 + 'px';
-  menu.style.top = y + 1 + 'px';
-
-  transfermenu.style.left = x + 1 + 'px';
-  transfermenu.style.top = y + 1 + 'px';
-
-  target_elem = myChart.getElementAtEvent(e)[0];
-
-  if (target_elem) {
-//    chartLabels.options[target_elem._datasetIndex].selected = 'selected';
-    $('.projectsselect').each(function(index, select) {
-        $(select).val(target_elem._datasetIndex);
-    });
-    var project = target_elem._model.datasetLabel.split(' (')[0];
-    $(menu).find('#addElem').html('Add to ' + project + ' on ' + target_elem._model.label);
-    $(menu).find('#deleteElem').html('Delete from ' + project + ' on ' + target_elem._model.label);
-    transfermenu.style.display = 'none';
-    menu.style.display = 'block';
-  }
-  else {
-    menu.style.display = 'none';
-    transfermenu.style.display = 'block';
-  }
-};
 
 // Delete Element
 /*
@@ -326,10 +387,11 @@ executetransfer.on('click', function(e){
 
 // Adjust total project hours limit
 let executechangelimit = $('#executenewlimit');
-let defaultlimit = 40;
 
 let calculateProjectTotal = function(limit) {
     $('#newlimit').val(limit);
+    changeChartLimit(limit);
+
     let projectsTotal = 0;
     let projectValues = {};
 
@@ -397,10 +459,11 @@ executenewproject.on('click', function(e){
             dataObject.push(0);
         }
     });
+    var hoursString = getHoursString(newprojectamount);
     myChart.data.datasets.push(
       {
         data: dataObject,
-        label: customprojectname + ' (' + newprojectamount + ' hours)',
+        label: customprojectname + ' (' + newprojectamount + ' ' + hoursString + ')',
         backgroundColor: getRandomRgb('.8'),
       }
     );
@@ -483,7 +546,7 @@ function calculateRandomRgb() {
   return false;
 }
 
-function getRandomRgb() {
+var getRandomRgb = function() {
   var newrgb = calculateRandomRgb();
 
   while (newrgb == false) {
@@ -493,10 +556,43 @@ function getRandomRgb() {
   return newrgb;
 }
 
+let switchChart = function(id) {
+	currentChartId = id;
+	myChart = chartObjects[id];
+	myChart.generateLegend();
+
+	$.each(chartData, function(index, chartDataObject) {
+		if (chartData[index]['id'] == id) {
+			ctx = document.getElementById(chartData[index]['id']);
+			defaultlimit = chartData[index]['defaultlimit'];
+		}
+	});
+
+	$('canvas').removeClass('in-view');
+	$('#' + currentChartId).addClass('in-view');
+
+
+	initSelects();
+	calculateProjectTotal(defaultlimit);
+    
+};
+
+let changeChartLimit = function(limit) {
+	$.each(chartData, function(index, chartDataObject) {
+		if (chartData[index]['id'] == currentChartId) {
+			chartData[index]['defaultlimit'] = limit;
+			defaultlimit = chartData[index]['defaultlimit'];
+		}
+	});
+}
+
+$('#chartselection').change(function(evt) {
+    var id = $(this).val();
+    switchChart(id);
+});
+
+
 window.openTip = openTip;
 window.closeTop = closeTip;
 
-myChart.generateLegend();
-initSelects();
-calculateProjectTotal(defaultlimit);
-
+switchChart(chartData[0]['id']);
