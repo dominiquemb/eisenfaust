@@ -84,11 +84,11 @@ a:hover {
 #custom-chart-tooltip.active {
     display: block;
 }
-
+/*
 #transfermodal .modal-dialog {
     width: 460px;
 }
-
+*/
 #transfermodal .transferamount {
     padding-top: 10px;
     clear: both;
