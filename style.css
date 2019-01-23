@@ -182,9 +182,9 @@ canvas.in-view {
     -webkit-opacity: 1;
 }
 
-#chartselection {
+#chartselection-container {
     float: left;
-    font-size: 25px;
+    font-size: 18px;
     margin: 30px 5px 30px 30px;
 }
 
@@ -468,6 +468,6 @@ canvas.in-view {
 }
 
 .toggle-container {
-  margin: 30px 30px 30px 5px;
+  margin: 35px 30px 30px 5px;
   float: left;
 }
