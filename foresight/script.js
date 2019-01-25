@@ -557,6 +557,7 @@ var getRandomRgb = function() {
 }
 
 let switchChart = function(id) {
+	console.log(id);
 	currentChartId = id;
 	myChart = chartObjects[id];
 	myChart.generateLegend();
@@ -586,6 +587,31 @@ let changeChartLimit = function(limit) {
 	});
 }
 
+let getInitialChartId = function() {
+	if (getUrlVars()["id"]) {
+		console.log(getUrlVars()["id"]);
+		switchChart(getUrlVars()["id"]);
+		$('#chartselection').val(getUrlVars()["id"]);
+	}
+	else {
+		switchChart(chartData[0]['id']);
+		$('#chartselection').val(chartData[0]['id']);
+	}
+
+}
+
+let getUrlVars = function() {
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+	    {
+			    hash = hashes[i].split('=');
+			    vars.push(hash[0]);
+			    vars[hash[0]] = hash[1];
+			}
+    return vars;
+}
+
 $('#chartselection').change(function(evt) {
     var id = $(this).val();
     switchChart(id);
@@ -595,4 +621,4 @@ $('#chartselection').change(function(evt) {
 window.openTip = openTip;
 window.closeTop = closeTip;
 
-switchChart(chartData[0]['id']);
+getInitialChartId();
